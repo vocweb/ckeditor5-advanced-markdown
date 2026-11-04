@@ -1,0 +1,133 @@
+/*
+ * @license GPL-2.0-or-later
+ * Styles for ckeditor5-advanced-markdown widgets and split view.
+ */
+
+.ck-content .md-raw-block,
+.ck-editor__editable .md-raw-block {
+    margin: 1em 0;
+    border: 1px dashed var(--ck-color-base-border, #c4c4c4);
+    border-radius: 4px;
+    background: var(--ck-color-base-foreground, #fafafa);
+}
+
+.md-raw-block__label {
+    padding: 2px 8px;
+    font: 600 11px/1.6 sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ck-color-text, #333);
+    opacity: 0.7;
+}
+
+.md-raw-block__body textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px 8px;
+    border: 0;
+    border-top: 1px solid var(--ck-color-base-border, #c4c4c4);
+    background: transparent;
+    font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+    resize: vertical;
+    white-space: pre;
+    overflow: auto;
+}
+
+.ck-editor__editable .md-raw-inline {
+    display: inline-block;
+    padding: 0 4px;
+    border-radius: 3px;
+    background: var(--ck-color-base-border, #e4e4e4);
+    font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.ck-editor__editable .md-directive {
+    position: relative;
+    margin: 1.4em 0 1em;
+    border: 1px solid var(--ck-color-base-border, #c4c4c4);
+    border-left: 4px solid var(--ck-color-focus-border, #1a73e8);
+    border-radius: 4px;
+}
+
+.ck-editor__editable .md-directive::before {
+    content: attr(data-md-title);
+    display: block;
+    padding: 2px 8px;
+    background: var(--ck-color-base-foreground, #f3f3f3);
+    font: 600 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--ck-color-text, #333);
+}
+
+.ck-editor__editable .md-directive__body {
+    padding: 0 12px;
+}
+
+.ck-editor__editable .md-directive-leaf {
+    margin: 1em 0;
+    padding: 4px 8px;
+    border: 1px solid var(--ck-color-base-border, #c4c4c4);
+    border-left: 4px solid var(--ck-color-focus-border, #1a73e8);
+    border-radius: 4px;
+    font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.ck-md-directive-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    min-width: 280px;
+}
+
+.ck-md-directive-form__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Split view: the code pane sits next to the editable inside the same host element. */
+.ck-md-split-view_active {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.ck-md-split-view_active > * {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* 両ペインを同じ固定高さにして、スクロール同期の比率が一致するようにする */
+/* Cố định cùng chiều cao cho hai pane để tỉ lệ đồng bộ cuộn khớp nhau */
+.ck-md-split-view_active .ck-editor__editable,
+.ck-md-split-view_active .ck-md-split-view__code {
+    box-sizing: border-box;
+    height: var(--ck-md-split-height, 70vh);
+}
+
+.ck-md-split-view_active .ck-editor__editable {
+    overflow: auto;
+}
+
+.ck-md-split-view__code[hidden] {
+    display: none;
+}
+
+.ck-md-split-view__code .cm-editor {
+    box-sizing: border-box;
+    height: 100%;
+    border: 1px solid var(--ck-color-base-border, #c4c4c4);
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.ck-md-split-view__code .cm-scroller {
+    overflow: auto;
+}
+
+.ck-md-directive-form .ck-labeled-field-view,
+.ck-md-directive-form .ck-input {
+    width: 100%;
+    box-sizing: border-box;
+}

@@ -1,0 +1,54 @@
+/**
+ * @license GPL-2.0-or-later
+ * Copyright (c) ckeditor5-advanced-markdown contributors.
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ */
+
+export type DirectiveAttributes = Record<string, string>;
+
+const SAFE_VALUE = /^[^\s"'=<>`{}]+$/;
+
+// 利用者が directive の構文で属性を編集できるようにするため
+// Để người dùng sửa thuộc tính bằng chính cú pháp của directive
+export function formatDirectiveAttributes( attributes: DirectiveAttributes ): string {
+    const parts: string[] = [];
+
+    for ( const [ key, value ] of Object.entries( attributes ) ) {
+        if ( key === 'class' ) {
+            parts.push( ...value.split( /\s+/ ).filter( Boolean ).map( name => '.' + name ) );
+        } else if ( key === 'id' && SAFE_VALUE.test( value ) ) {
+            parts.push( '#' + value );
+        } else if ( value === '' ) {
+            parts.push( key );
+        } else {
+            parts.push( SAFE_VALUE.test( value ) ? `${ key }=${ value }` : `${ key }="${ value.replace( /"/g, '&quot;' ) }"` );
+        }
+    }
+
+    return parts.join( ' ' );
+}
+
+const TOKEN = /\.([^\s.#="]+)|#([^\s.#="]+)|([^\s.#="]+)(?:=(?:"([^"]*)"|'([^']*)'|([^\s"']+)))?/g;
+
+// フォームの入力を属性オブジェクトへ戻すため。解析できない入力は空にして壊れた属性を出さない
+// Đưa dữ liệu form về lại đối tượng thuộc tính; đầu vào không parse được thì rỗng để không sinh thuộc tính hỏng
+export function parseDirectiveAttributes( text: string ): DirectiveAttributes {
+    const attributes: DirectiveAttributes = {};
+    const input = text.trim().replace( /^\{|\}$/g, '' );
+
+    for ( const match of input.matchAll( TOKEN ) ) {
+        const [ , className, id, key, quoted, singleQuoted, bare ] = match;
+
+        if ( className ) {
+            attributes.class = attributes.class ? `${ attributes.class } ${ className }` : className;
+        } else if ( id ) {
+            attributes.id = id;
+        } else if ( key ) {
+            attributes[ key ] = ( quoted ?? singleQuoted ?? bare ?? '' ).replace( /&quot;/g, '"' );
+        }
+    }
+
+    return attributes;
+}
