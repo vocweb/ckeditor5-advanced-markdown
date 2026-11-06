@@ -10,12 +10,12 @@ import { Plugin, Widget, toWidget, toWidgetEditable } from 'ckeditor5';
 import type { ModelElement, ViewElement, ViewDowncastWriter } from 'ckeditor5';
 import { AdvancedMarkdownDataProcessor } from './dataprocessor.js';
 import { DIRECTIVE_CLASS, DIRECTIVE_LEAF_CLASS, RAW_BLOCK_CLASS, RAW_INLINE_CLASS } from './core/toView.js';
-import { formatDirectiveAttributes } from './core/directiveAttributes.js';
+import { formatDirectiveAttributes, parseAttributesJson } from './core/directiveAttributes.js';
 
 const asAttributes = ( element: ModelElement ) => {
     const json = element.getAttribute( 'attrs' ) as string | undefined;
 
-    return json ? JSON.parse( json ) as Record<string, string> : {};
+    return parseAttributesJson( json );
 };
 
 export function directiveSyntax( element: ModelElement, leaf: boolean ): string {

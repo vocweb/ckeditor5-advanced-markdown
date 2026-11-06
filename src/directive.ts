@@ -11,7 +11,7 @@ import {
     KeystrokeHandler, FocusTracker, IconCheck, IconCancel, IconPlus, IconPencil, clickOutsideHandler
 } from 'ckeditor5';
 import type { Editor, Locale, ModelElement, InputTextView } from 'ckeditor5';
-import { formatDirectiveAttributes, parseDirectiveAttributes } from './core/directiveAttributes.js';
+import { formatDirectiveAttributes, parseAttributesJson, parseDirectiveAttributes } from './core/directiveAttributes.js';
 
 const DIRECTIVE_NAME = /^[A-Za-z][\w-]*$/;
 
@@ -305,7 +305,7 @@ export class AdvancedMarkdownDirectiveUI extends Plugin {
             this.form.configure( 'directive', {
                 name: target.getAttribute( 'name' ) as string,
                 label: ( target.getAttribute( 'label' ) as string | undefined ) ?? '',
-                attributes: json ? formatDirectiveAttributes( JSON.parse( json ) ) : ''
+                attributes: formatDirectiveAttributes( parseAttributesJson( json ) )
             } );
         }
 

@@ -52,3 +52,35 @@ export function parseDirectiveAttributes( text: string ): DirectiveAttributes {
 
     return attributes;
 }
+
+// 貼り付け由来の JSON は信頼できないので、壊れていれば空にし、構文を壊す key と文字列以外の値は捨てる
+// JSON từ nội dung dán không đáng tin nên nếu hỏng thì trả rỗng, bỏ key làm vỡ cú pháp và giá trị không phải chuỗi
+const SAFE_KEY = /^[^\s"'=<>`{}.#/]+$/;
+
+export function parseAttributesJson( json: string | undefined ): DirectiveAttributes {
+    const attributes: DirectiveAttributes = {};
+
+    if ( !json ) {
+        return attributes;
+    }
+
+    let parsed: unknown;
+
+    try {
+        parsed = JSON.parse( json );
+    } catch {
+        return attributes;
+    }
+
+    if ( typeof parsed !== 'object' || parsed === null || Array.isArray( parsed ) ) {
+        return attributes;
+    }
+
+    for ( const [ key, value ] of Object.entries( parsed ) ) {
+        if ( typeof value === 'string' && ( key === 'class' || key === 'id' || SAFE_KEY.test( key ) ) ) {
+            attributes[ key ] = value;
+        }
+    }
+
+    return attributes;
+}

@@ -113,3 +113,42 @@ describe( 'task lists', () => {
         expect( MarkdownCodec.normalize( html ) ).toEqual( [ '- [x] done\n- [ ] todo' ] );
     } );
 } );
+
+describe( 'scoreMarkdown on hostile input', () => {
+    // 旧 regex は同期で走り終わるまで止められないので、旧実装が数百 ms から数秒で終わる大きさに抑える
+    // Regex cũ chạy đồng bộ không ngắt được nên giữ cỡ input để bản cũ chỉ mất vài trăm ms đến vài giây rồi kết thúc
+    test.each( [
+        [ 'newlines', '\n'.repeat( 1500 ) ],
+        [ 'spaces', ' '.repeat( 20000 ) + 'x' ]
+    ] )( 'stays fast on %s', ( _name, text ) => {
+        const start = performance.now();
+
+        scoreMarkdown( text );
+
+        expect( performance.now() - start ).toBeLessThan( 100 );
+    } );
+
+    test( 'still detects tables, lists and task lists', () => {
+        expect( scoreMarkdown( 'a|b\n--|--\n' ).features ).toContain( 'table' );
+        expect( scoreMarkdown( '| a | b |\n|---|:-:|\n' ).features ).toContain( 'table' );
+        expect( scoreMarkdown( '  - [x] done\n' ).features ).toEqual( expect.arrayContaining( [ 'taskList', 'list' ] ) );
+        expect( scoreMarkdown( '1. one\n' ).features ).toContain( 'list' );
+    } );
+} );
+
+describe( 'untrusted directive attribute JSON', () => {
+    test( 'malformed JSON does not throw and yields no attributes', () => {
+        const html = '<div class="md-directive" data-md-name="n" data-md-attrs="{bad"></div>';
+
+        expect( () => new MarkdownCodec().toMarkdown( html ) ).not.toThrow();
+    } );
+
+    test( 'keys that would break directive syntax are dropped', () => {
+        const json = JSON.stringify( { 'a} b{': 'x', ok: 'y', n: 1 } );
+        const html = `<div class="md-directive-leaf" data-md-name="n" data-md-attrs='${ json }'></div>`;
+        const markdown = new MarkdownCodec().toMarkdown( html );
+
+        expect( markdown ).toContain( '::n{ok="y"}' );
+        expect( markdown ).not.toContain( 'a}' );
+    } );
+} );

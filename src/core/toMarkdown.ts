@@ -14,6 +14,7 @@ import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
 import type { Root, Paragraph, RootContent } from 'mdast';
 import { parser, stringifier } from './document.js';
+import { parseAttributesJson } from './directiveAttributes.js';
 import { DIRECTIVE_CLASS, DIRECTIVE_LEAF_CLASS, RAW_BLOCK_CLASS, RAW_INLINE_CLASS } from './toView.js';
 
 const classesOf = ( node: HastElement ) => ( node.properties.className ?? [] ) as string[];
@@ -26,7 +27,7 @@ const attribute = ( node: HastElement, key: string ) => {
 function parseAttributes( node: HastElement ): Record<string, string> {
     const json = attribute( node, 'dataMdAttrs' );
 
-    return json ? JSON.parse( json ) : {};
+    return parseAttributesJson( json );
 }
 
 // ラベルは Markdown 原文で保持するため、再パースしてエスケープを統一する

@@ -17,14 +17,16 @@ interface Feature {
     weight: number;
 }
 
+// \s は改行も含み行頭ごとに全体を再走査して二次以上になるため、行頭の空白は [ \t] に限る
+// \s gồm cả xuống dòng nên mỗi đầu dòng quét lại toàn bộ gây độ phức tạp bậc hai trở lên, vì vậy khoảng trắng đầu dòng chỉ dùng [ \t]
 const FEATURES: Feature[] = [
     { name: 'frontmatter', pattern: /^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, weight: 3 },
     { name: 'fence', pattern: /^\s{0,3}(?:```|~~~)/m, weight: 3 },
     { name: 'directive', pattern: /^:{2,}[A-Za-z][\w-]*/m, weight: 3 },
-    { name: 'table', pattern: /^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)+\|?\s*$/m, weight: 3 },
-    { name: 'taskList', pattern: /^\s*[-*+]\s\[[ xX]\]\s/m, weight: 3 },
+    { name: 'table', pattern: /^[ \t]*(?:\|[ \t]*)?:?-+:?[ \t]*(?:\|[ \t]*:?-+:?[ \t]*)+(?:\|[ \t]*)?$/m, weight: 3 },
+    { name: 'taskList', pattern: /^[ \t]*[-*+]\s\[[ xX]\]\s/m, weight: 3 },
     { name: 'heading', pattern: /^\s{0,3}#{1,6}\s+\S/m, weight: 2 },
-    { name: 'list', pattern: /^\s*(?:[-*+]|\d+[.)])\s+\S/m, weight: 1 },
+    { name: 'list', pattern: /^[ \t]*(?:[-*+]|\d+[.)])[ \t]+\S/m, weight: 1 },
     { name: 'blockquote', pattern: /^\s{0,3}>\s?\S/m, weight: 1 },
     { name: 'link', pattern: /\[[^\]\n]+\]\([^)\s]+\)/, weight: 1 },
     { name: 'emphasis', pattern: /\*\*[^*\n]+\*\*|(?<![\w*])\*[^*\s][^*\n]*\*(?![\w*])/, weight: 1 },
