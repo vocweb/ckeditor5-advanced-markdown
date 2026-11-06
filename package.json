@@ -1,0 +1,71 @@
+{
+  "name": "ckeditor5-advanced-markdown",
+  "version": "0.1.0",
+  "description": "Source-preserving Markdown data format, smart paste and split-view for CKEditor 5 (GFM, directives, frontmatter, raw MDX).",
+  "license": "GPL-2.0-or-later",
+  "type": "module",
+  "keywords": [
+    "ckeditor5",
+    "ckeditor5-plugin",
+    "markdown",
+    "gfm",
+    "directive",
+    "split-view"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./theme/*": "./theme/*"
+  },
+  "files": [
+    "dist",
+    "theme",
+    "LICENSE",
+    "README.md"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "vite",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "peerDependencies": {
+    "ckeditor5": ">=48.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "ckeditor5": "49.0.1",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^7.0.0",
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.8.0",
+    "@codemirror/lang-markdown": "^6.3.0",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.0",
+    "@types/hast": "^3.0.0",
+    "@types/mdast": "^4.0.0",
+    "hast-util-from-html": "^2.0.0",
+    "hast-util-to-html": "^9.0.0",
+    "hast-util-to-mdast": "^10.1.0",
+    "mdast-util-directive": "^3.0.0",
+    "mdast-util-to-hast": "^13.2.0",
+    "remark-directive": "^4.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.0",
+    "unist-util-visit": "^5.0.0"
+  }
+}

@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # latest と N-1 の両方で試験し、対応する最小バージョンは結果で決める
+        # Chạy trên latest và N-1, phiên bản tối thiểu được hỗ trợ do kết quả quyết định
+        ck: ['latest', '48']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --no-audit --no-fund
+      - run: npm install ckeditor5@${{ matrix.ck }} --no-save --no-audit --no-fund
+      - run: npx ckeditor5 --version || node -p "require('ckeditor5/package.json').version"
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
